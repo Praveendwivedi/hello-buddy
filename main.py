@@ -3,7 +3,9 @@ from __future__ import division
 import re
 import sys
 import os
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="location of google authentication key"
+from pynput.keyboard import Key, Controller
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="location of google authentication"
 
 from google.cloud import speech
 import pyaudio
@@ -13,6 +15,7 @@ from six.moves import queue
 RATE = 16000
 CHUNK = int(RATE / 10)  # 100ms
 
+keyboard = Controller()
 
 class MicrophoneStream(object):
     """Opens a recording stream as a generator yielding the audio chunks."""
@@ -99,6 +102,7 @@ def listen_print_loop(responses):
     """
     num_chars_printed = 0
     flag = False
+
     for response in responses:
         if not response.results:
             continue
@@ -127,26 +131,70 @@ def listen_print_loop(responses):
             num_chars_printed = len(transcript)
 
         else:   
-            print(transcript+overwrite_chars)  
-            print(flag)    
+            print(transcript+overwrite_chars)     
             if re.search(r"\b(hey siri)\b", transcript.lower(), re.I):
                 print("Listening...")
                 flag = True
-                print(flag)
 
-            if re.search(r"\b(sleep)\b", transcript, re.I) and flag:
+            if re.search(r"\b(play|music)\b", transcript, re.I) and flag:
                 print("Sleep..")
 
-            if re.search(r"\b(turn off|turnoff)\b", transcript, re.I) and flag:
-                print("Turn off..") 
-
             if re.search(r"\b(log off|logoff)\b", transcript, re.I) and flag:
-                print("Log off..")
+                os.system("shutdown -l")
 
-            if re.search(r"\b(flag)\b", transcript, re.I) and flag:
-                print(flag)
+            if re.search(r"\b(turn off|turnoff)\b", transcript, re.I) and flag:
+                os.system('shutdown -s')
 
-            if re.search(r"\b(okay tata bye bye)\b", transcript, re.I):
+            if re.search(r"\b(sleep)\b", transcript, re.I) and flag:
+                os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+
+            if re.search(r"\b(restart)\b", transcript, re.I) and flag:
+                os.system("shutdown -t 0 -r -f")
+            
+            if re.search(r"\b(activate virtual mouse)\b", transcript, re.I) and flag:
+                print("Activate virtual mouse")
+            
+            if re.search(r"\b(virtual keyboard)\b", transcript, re.I) and flag:
+                with keyboard.pressed(Key.cmd_l):
+                    with keyboard.pressed(Key.ctrl):
+                        keyboard.press('o')
+                        keyboard.release('o')
+
+            if re.search(r"\b(open task manager)\b", transcript, re.I) and flag:
+                with keyboard.pressed(Key.ctrl):
+                    with keyboard.pressed(Key.shift):
+                        keyboard.press(Key.esc)
+                        keyboard.release(Key.esc)
+
+            if re.search(r"\b(close task manager)\b", transcript, re.I) and flag:
+                with keyboard.pressed(Key.alt):
+                    keyboard.press(Key.f4)
+                    keyboard.release(Key.f4)
+
+            if re.search(r"\b(close current window| close current app| close current tab)\b", transcript, re.I) and flag:
+                with keyboard.pressed(Key.alt):
+                    keyboard.press(Key.f4)
+                    keyboard.release(Key.f4)
+
+            if re.search(r"\b(close all processes)\b", transcript, re.I) and flag:
+                print("Sleep..")
+
+            if re.search(r"\b(Upload file)\b", transcript, re.I) and flag:
+                print("Sleep..")
+
+            if re.search(r"\b(open)\b", transcript, re.I) and flag:
+                print("Sleep..")
+
+            if re.search(r"\b(delete temp file| delete temporary file| delete temprary files| delete temp files)\b", transcript, re.I) and flag:
+                print("Sleep..")
+
+            if re.search(r"\b(time)\b", transcript, re.I) and flag:
+                print("Sleep..")
+
+            if re.search(r"\b(weather)\b", transcript, re.I) and flag:
+                print("Sleep..")
+
+            if re.search(r"\b(nice| cool| done| wow| bye| okay)\b", transcript, re.I):
                 print("Exiting..")
                 flag = False           
 
