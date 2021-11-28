@@ -3,3 +3,7 @@ pyaudio
 google-cloud-speech
 pynput
 playsound=1.2.2
+opencv-python
+numpy
+mediapipe
+autopy
