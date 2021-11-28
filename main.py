@@ -3,9 +3,10 @@ from __future__ import division
 import re
 import sys
 import os
+import VirtualMouse as vm
 from pynput.keyboard import Key, Controller
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="location of google authentication"
+# os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="location of google authentication"
 
 from google.cloud import speech
 import pyaudio
@@ -131,28 +132,33 @@ def listen_print_loop(responses):
             num_chars_printed = len(transcript)
 
         else:   
-            print(transcript+overwrite_chars)     
-            if re.search(r"\b(hey siri)\b", transcript.lower(), re.I):
+            print(transcript+overwrite_chars)  
+            print(flag)    
+            if re.search(r"\b(hello buddy|hello birdie|hello body)\b", transcript.lower(), re.I):
                 print("Listening...")
                 flag = True
-
             if re.search(r"\b(play|music)\b", transcript, re.I) and flag:
                 print("Sleep..")
 
             if re.search(r"\b(log off|logoff)\b", transcript, re.I) and flag:
-                os.system("shutdown -l")
+                # os.system("shutdown -l")
+                pass
 
             if re.search(r"\b(turn off|turnoff)\b", transcript, re.I) and flag:
-                os.system('shutdown -s')
-
+                # os.system('shutdown -s')
+                pass
             if re.search(r"\b(sleep)\b", transcript, re.I) and flag:
-                os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+                # os.system("rundll32.exe powrprof.dll,SetSuspendState 0,1,0")
+                pass
 
             if re.search(r"\b(restart)\b", transcript, re.I) and flag:
-                os.system("shutdown -t 0 -r -f")
+                # os.system("shutdown -t 0 -r -f")
+                pass
             
-            if re.search(r"\b(activate virtual mouse)\b", transcript, re.I) and flag:
+            if re.search(r"\b(start virtual mouse|activate virtual mouse)\b", transcript, re.I) and flag:
                 print("Activate virtual mouse")
+                vm.start_vm()
+                print("Deactivate virtual mouse")
             
             if re.search(r"\b(virtual keyboard)\b", transcript, re.I) and flag:
                 with keyboard.pressed(Key.cmd_l):
@@ -194,7 +200,7 @@ def listen_print_loop(responses):
             if re.search(r"\b(weather)\b", transcript, re.I) and flag:
                 print("Sleep..")
 
-            if re.search(r"\b(nice| cool| done| wow| bye| okay)\b", transcript, re.I):
+            if re.search(r"\b(exit|bye|quit)\b", transcript, re.I):
                 print("Exiting..")
                 flag = False           
 
@@ -234,5 +240,5 @@ def main():
         listen_print_loop(responses)
 
 
-if __name__ == "__main__":
-    main()
+
+main()

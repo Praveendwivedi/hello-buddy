@@ -7,3 +7,4 @@ opencv-python
 numpy
 mediapipe
 autopy
+python-dotenv
