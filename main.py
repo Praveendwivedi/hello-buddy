@@ -3,13 +3,22 @@ from __future__ import division
 import re
 import sys
 import os
+import playsound
+from threading import Thread
 from pynput.keyboard import Key, Controller
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="location of google authentication"
+from win32com.client import GetObject
+
+WMI = GetObject('winmgmts:')
+processes = WMI.InstancesOf('Win32_Process')
+
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="location of google authentication file"
 
 from google.cloud import speech
 import pyaudio
 from six.moves import queue
+
+
 
 # Audio recording parameters
 RATE = 16000
@@ -84,6 +93,8 @@ class MicrophoneStream(object):
 
             yield b"".join(data)
 
+def play_music():
+    playsound.playsound(r'D:\\videos\music.mp3')
 
 def listen_print_loop(responses):
     """Iterates through server responses and prints them.
@@ -102,7 +113,8 @@ def listen_print_loop(responses):
     """
     num_chars_printed = 0
     flag = False
-
+    music_thread = Thread(target=play_music)
+    name = 'Taskmgr.exe'
     for response in responses:
         if not response.results:
             continue
@@ -137,7 +149,10 @@ def listen_print_loop(responses):
                 flag = True
 
             if re.search(r"\b(play|music)\b", transcript, re.I) and flag:
-                print("Sleep..")
+                music_thread.start()
+
+            if re.search(r"\b(stop|stop music)\b", transcript, re.I) and flag:
+                music_thread.deamon()
 
             if re.search(r"\b(log off|logoff)\b", transcript, re.I) and flag:
                 os.system("shutdown -l")
@@ -167,26 +182,22 @@ def listen_print_loop(responses):
                         keyboard.release(Key.esc)
 
             if re.search(r"\b(close task manager)\b", transcript, re.I) and flag:
-                with keyboard.pressed(Key.alt):
-                    keyboard.press(Key.f4)
-                    keyboard.release(Key.f4)
+                os.system('wmic process where name="Taskmgr.exe" delete')
 
             if re.search(r"\b(close current window| close current app| close current tab)\b", transcript, re.I) and flag:
                 with keyboard.pressed(Key.alt):
                     keyboard.press(Key.f4)
                     keyboard.release(Key.f4)
 
-            if re.search(r"\b(close all processes)\b", transcript, re.I) and flag:
-                print("Sleep..")
+            # if re.search(r"\b(Upload file)\b", transcript, re.I) and flag:
+            #     print("Sleep..")
 
-            if re.search(r"\b(Upload file)\b", transcript, re.I) and flag:
-                print("Sleep..")
-
-            if re.search(r"\b(open)\b", transcript, re.I) and flag:
-                print("Sleep..")
+            # if re.search(r"\b(open)\b", transcript, re.I) and flag:
+            #     print("Sleep..")
 
             if re.search(r"\b(delete temp file| delete temporary file| delete temprary files| delete temp files)\b", transcript, re.I) and flag:
-                print("Sleep..")
+                del_dir = r'C:\Users\User\AppData\Local\Temp'
+                #pObj = subprocess.Popen('rmdir /S /Q %s' % del_dir, shell=True, stdout = subprocess.PIPE, stderr= subprocess.PIPE)
 
             if re.search(r"\b(time)\b", transcript, re.I) and flag:
                 print("Sleep..")
@@ -194,7 +205,7 @@ def listen_print_loop(responses):
             if re.search(r"\b(weather)\b", transcript, re.I) and flag:
                 print("Sleep..")
 
-            if re.search(r"\b(nice| cool| done| wow| bye| okay)\b", transcript, re.I):
+            if re.search(r"\b(nice|cool|done|wow|bye|okay)\b", transcript, re.I):
                 print("Exiting..")
                 flag = False           
 

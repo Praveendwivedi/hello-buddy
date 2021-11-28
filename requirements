@@ -1,6 +1,5 @@
-wheel
 pipwin
 pyaudio
 google-cloud-speech
 pynput
-google-cloud-speech
+playsound=1.2.2
