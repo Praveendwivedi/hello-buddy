@@ -1,5 +1,7 @@
 # Hello Buddy!
 
+![](sample.gif)
+
 * [Description](#description)
 * [Features](#features)
 * [Setup](#setup)
