@@ -21,6 +21,11 @@ All the listed below features can be done through just voice commands.
 
 ## Setup:
 
+> [Create Google Cloud Account.](https://cloud.google.com/apigee/docs/hybrid/v1.5/precog-gcpaccount)
+> Enable Cloud Speech-to-Text API.
+> [Setup Authentication and Download key json file in current directory.](https://cloud.google.com/docs/authentication/getting-started)
+> Rename key json file to "credentials.json"
+
 ## Only for Windows:
 1. Install chocolatey from [here](https://chocolatey.org/install) or run the below command on powershell.
 ```
