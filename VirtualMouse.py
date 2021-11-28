@@ -68,6 +68,7 @@ def start_vm():
 
         # Step12: Display
         img=cv2.flip(img,1)
-        cv2.imshow("Image", img)
+        # cv2.imshow("Image", img)
+        # cv2.setWindowProperty("Image", cv2.WND_PROP_TOPMOST, 1)
         if cv2.waitKey(1)==ord('q'):
             break

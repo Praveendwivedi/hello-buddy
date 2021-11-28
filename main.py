@@ -5,16 +5,16 @@ import sys
 import os
 import VirtualMouse as vm
 from pynput.keyboard import Key, Controller
-
+import multiprocessing
 # os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="location of google authentication"
 import playsound
 from threading import Thread
 from pynput.keyboard import Key, Controller
 
-from win32com.client import GetObject
+# from win32com.client import GetObject
 
-WMI = GetObject('winmgmts:')
-processes = WMI.InstancesOf('Win32_Process')
+# WMI = GetObject('winmgmts:')
+# processes = WMI.InstancesOf('Win32_Process')
 
 
 from google.cloud import speech
@@ -95,9 +95,14 @@ class MicrophoneStream(object):
                     break
 
             yield b"".join(data)
-
+stop = False
 def play_music():
-    playsound.playsound(r'D:\\videos\music.mp3')
+    print("......")
+    playsound.playsound(r'music\\music.mp3')
+    global stop
+    if stop:
+        print("stoppp")
+        return 0
 
 def listen_print_loop(responses):
     """Iterates through server responses and prints them.
@@ -116,7 +121,8 @@ def listen_print_loop(responses):
     """
     num_chars_printed = 0
     flag = False
-    music_thread = Thread(target=play_music)
+    # music_thread = Thread(target=play_music)
+    music_thread = multiprocessing.Process(target=playsound.playsound,args=("music\music.mp3",))
     name = 'Taskmgr.exe'
     for response in responses:
         if not response.results:
@@ -147,15 +153,20 @@ def listen_print_loop(responses):
 
         else:   
             print(transcript+overwrite_chars)  
-            print(flag)    
+            # print(flag)    
             if re.search(r"\b(hello buddy|hello birdie|hello body)\b", transcript.lower(), re.I):
                 print("Listening...")
                 flag = True
-            if re.search(r"\b(play|music)\b", transcript, re.I) and flag:
+            if re.search(r"\b(play music)\b", transcript, re.I) and flag:
                 music_thread.start()
+                print("music started")
+                # process.start()
 
             if re.search(r"\b(stop|stop music)\b", transcript, re.I) and flag:
-                music_thread.deamon()
+                # music_thread.deamon()
+                # music_thread.terminate()
+                print("music stopped")
+                stop=True
 
             if re.search(r"\b(log off|logoff)\b", transcript, re.I) and flag:
                 # os.system("shutdown -l")
@@ -172,7 +183,7 @@ def listen_print_loop(responses):
                 # os.system("shutdown -t 0 -r -f")
                 pass
             
-            if re.search(r"\b(start virtual mouse|activate virtual mouse)\b", transcript, re.I) and flag:
+            if re.search(r"\b(open virtual mouse|start virtual mouse|activate virtual mouse)\b", transcript, re.I) and flag:
                 print("Activate virtual mouse")
                 vm.start_vm()
                 print("Deactivate virtual mouse")
@@ -239,7 +250,7 @@ def main():
     streaming_config = speech.StreamingRecognitionConfig(
         config=config, interim_results=True
     )
-
+    print("started....")
     with MicrophoneStream(RATE, CHUNK) as stream:
         audio_generator = stream.generator()
         requests = (
