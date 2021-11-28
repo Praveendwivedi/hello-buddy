@@ -1,6 +1,8 @@
+wheel
 pipwin
 pyaudio
 google-cloud-speech
+pynput
 opencv-python
 numpy
 mediapipe
