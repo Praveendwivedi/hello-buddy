@@ -3,4 +3,7 @@ pipwin
 pyaudio
 google-cloud-speech
 pynput
-google-cloud-speech
+opencv-python
+numpy
+mediapipe
+autopy
