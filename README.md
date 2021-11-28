@@ -57,4 +57,4 @@ $ make
   $ make run
   ```  
 
-# [Checkout this video](https://youtu.be/6O-9fCBY4ws)!!
+# [Checkout this video](https://www.youtube.com/watch?v=dxbS4dD5-d8)!!
