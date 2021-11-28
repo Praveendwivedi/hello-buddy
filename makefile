@@ -12,6 +12,7 @@ venv:
 
 install:
 	pip install -r requirements
+	pipwin install pyaudio
 run:
 	make install
 	$(PYTHON) app.py
