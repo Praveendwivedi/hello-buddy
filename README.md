@@ -51,11 +51,11 @@ $ make
   - for Windows:
   ```
     $ Set-ExecutionPolicy -ExecutionPolicy Unrestricted -Scope CurrentUser
-    $ . HFenv\Scripts\activate
+    $ . venv\Scripts\activate
   ```
   - for linux:
   ```
-  . ./HFenv/bin/activate
+  . ./venv/bin/activate
   ```
   - finally:
   ```
