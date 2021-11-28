@@ -1,4 +1,6 @@
+wheel
 pipwin
 pyaudio
 google-cloud-speech
 pynput
+google-cloud-speech
